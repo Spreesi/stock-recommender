@@ -8,7 +8,7 @@
 </head>
 <body class="bg-light">
 
-    <!-- Disclaimer Modal (kept from Week 1) -->
+    <!-- Disclaimer Modal -->
     <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -16,7 +16,7 @@
                     <h5 class="modal-title">Important Disclaimer</h5>
                 </div>
                 <div class="modal-body">
-                    <p>This website provides general information and basic stock suggestions for educational purposes only. It is <strong>not financial advice</strong>.</p>
+                    <p>This website provides general information and basic stock/ETF suggestions for educational purposes only. It is <strong>not financial advice</strong>.</p>
                     <p>No content constitutes a recommendation to buy, sell, or hold any security. All investments carry risk, and you may lose money.</p>
                     <p>Always conduct your own research and consult qualified financial professionals before making investment decisions.</p>
                     <p>Data is sourced from public APIs and may contain errors or delays. Use at your own risk.</p>
@@ -31,7 +31,18 @@
     <div class="container py-5">
         <div class="text-center mb-5">
             <h1 class="display-4">Free Stock Recommender</h1>
-            <p class="lead">Select a region and sector to receive 5 basic company suggestions.</p>
+            <p class="lead">Select investment type, region, and sector to receive 5 basic company or ETF suggestions.</p>
+        </div>
+
+        <!-- Investment Type Selection -->
+        <div class="text-center mb-4">
+            <div class="btn-group" role="group" aria-label="Investment type">
+                <input type="radio" class="btn-check" name="type" id="stocks" value="stocks" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="stocks">Stocks</label>
+
+                <input type="radio" class="btn-check" name="type" id="etfs" value="etfs" autocomplete="off">
+                <label class="btn btn-outline-primary" for="etfs">ETFs</label>
+            </div>
         </div>
 
         <!-- Selection Form -->
@@ -77,7 +88,7 @@
 
     <!-- Custom JavaScript -->
     <script>
-        // Show disclaimer modal on first visit
+        // Show disclaimer modal on first visit only
         if (!localStorage.getItem('disclaimerAccepted')) {
             const modal = new bootstrap.Modal(document.getElementById('disclaimerModal'));
             modal.show();
@@ -89,17 +100,23 @@
         // Handle form submission
         document.getElementById('stockForm').addEventListener('submit', function (event) {
             event.preventDefault();
+
+            const type = document.querySelector('input[name="type"]:checked').value;
             const region = document.getElementById('region').value;
             const sector = document.getElementById('sector').value;
 
-            // For now, just display what was selected
+            const regionDisplay = region.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const sectorDisplay = sector.replace(/\b\w/g, l => l.toUpperCase());
+            const typeDisplay = type === 'stocks' ? 'Stocks' : 'ETFs';
+
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = `
-                    <div class="alert alert-info">
-                        <h4>You selected:</h4>
-                        <p><strong>Region:</strong> ${region.replace('-', ' ').toUpperCase()}</p>
-                        <p><strong>Sector:</strong> ${sector.toUpperCase()}</p>
-                        <p class="mt-3">Recommendations will be loaded here in the next step.</p>
+                    <div class="alert alert-info text-center">
+                        <h4>Your Selection</h4>
+                        <p><strong>Investment Type:</strong> ${typeDisplay}</p>
+                        <p><strong>Region:</strong> ${regionDisplay}</p>
+                        <p><strong>Sector:</strong> ${sectorDisplay}</p>
+                        <p class="mt-3 mb-0">Real recommendations will be fetched and displayed here in the next development step.</p>
                     </div>
                 `;
         });
